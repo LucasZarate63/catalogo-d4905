@@ -202,22 +202,27 @@ function openModal(p) {
   document.getElementById('modalPrice').textContent = formatPrice(p.price);
   document.getElementById('modalStock').textContent = p.stock > 0 ? p.stock + ' en stock' : 'Sin stock';
 
-  if (p.image) {
+ if (p.image) {
     img.style.display = '';
-    img.src = p.image;
+    img.style.opacity = '0';
     img.alt = p.name;
+    img.onload = () => { img.style.opacity = '1'; };
     img.onerror = () => handleImgError(img, p.driveId || '');
+    img.src = p.image;
   } else {
     img.style.display = 'none';
   }
 
-  document.getElementById('modalOverlay').hidden = false;
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
   document.body.style.overflow = 'hidden';
+  document.body.style.paddingRight = scrollbarWidth + 'px';
+  document.getElementById('modalOverlay').classList.add('open');
 }
 
 function closeModal() {
-  document.getElementById('modalOverlay').hidden = true;
+  document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
 }
 
 document.getElementById('modalClose').addEventListener('click', closeModal);
