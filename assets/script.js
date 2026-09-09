@@ -184,9 +184,49 @@ function renderGrid() {
       </div>
     `;
 
+       card.addEventListener('click', () => openModal(p));
+
     gridEl.appendChild(card);
   });
 }
+
+// ---------------------------------------------------------------
+// Modal de detalle
+// ---------------------------------------------------------------
+function openModal(p) {
+  const img = document.getElementById('modalImg');
+
+  document.getElementById('modalCategory').textContent = p.category;
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalDesc').textContent = p.desc || 'Sin descripción disponible.';
+  document.getElementById('modalPrice').textContent = formatPrice(p.price);
+  document.getElementById('modalStock').textContent = p.stock > 0 ? p.stock + ' en stock' : 'Sin stock';
+
+  if (p.image) {
+    img.style.display = '';
+    img.src = p.image;
+    img.alt = p.name;
+    img.onerror = () => handleImgError(img, p.driveId || '');
+  } else {
+    img.style.display = 'none';
+  }
+
+  document.getElementById('modalOverlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').hidden = true;
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modalOverlay') closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
 
 function render() {
   renderChips();
